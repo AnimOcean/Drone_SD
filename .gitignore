@@ -1,3 +1,4 @@
-*.jpg
+image_processing/*.jpg
+image_processing/*.png
 *.png
 *.DS_Store*
