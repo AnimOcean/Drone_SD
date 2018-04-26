@@ -1,30 +1,28 @@
-close all; clear all; clc;
+close all; clear all;
 for t=1:1
     input_img = strcat('test_images/','liz','.jpg');
     img = imread(input_img);
-    %img = imresize(img,[500 NaN]);
+    img = imresize(img,[500 NaN]);
     img_copy2 = img;
 
     thresh = 6;
 
     img = padarray(img, [thresh/2 thresh/2], 0, 'both');
     img_copy = img;
-    figure(69)
-    imshow(img_copy)
 
     img_copy = imgaussfilt(img_copy,3);
 
+    %imshow(img_copy2);
+
     %img = uint8(bilateral_filter(double(img),5,5,15));
-    img = rgb2gray(img_copy);
-    %img = histeq(img);
-    figure(1)
-    imshow(img)
+    img = rgb2gray(img_copy)
+    
+    %figure,imshow(img);
 
     % Get image edges using a canny edge detector
     edges = edge(img,'canny');
     edges = imdilate(edges,strel('rectangle',[3 3]));
-    figure(2)
-    imshow(edges)
+    %erode
 
     % Edge thresholding using a few heuristics
     for i=thresh+1:size(img_copy,1)-thresh
@@ -80,8 +78,7 @@ for t=1:1
                 % if they are present in the gradient image. We do this in the
                 % filtered image so this would ignore small variations.
                 if score == 4
-%                     edges(i,j) = 0;
-                    edges(i,j) = edges(i,j);
+                    edges(i,j) = 0;
                 else
                     edges(i,j) = 1;
                 end
@@ -91,8 +88,6 @@ for t=1:1
     end
 
     edges_new = edges;
-    figure(3)
-    imshow(edges_new)
 
     % Join up small disconnected edges since these generally correspond to the
     % same component and need to be connected.
@@ -108,9 +103,8 @@ for t=1:1
         end
     end
     edges = edges_new;
-    figure(4)
-    imshow(edges)
 
+    %imshow(edges);
 
     % Consider regions and discard ones whose perimeters are too large or too
     % small.
@@ -126,17 +120,15 @@ for t=1:1
 
     L = labelmatrix(CC);
 
-    edges = ismember(L, find(([D1.Perimeter] <= (1.5*meanPerimeters + 1.0*maxPerimeters)/2.5) & ([D1.Perimeter] >= meanPerimeters/4.0)));
-    figure(5)
-    imshow(edges)
+    edges = ismember(L, find(([D1.Perimeter] > (1.5*meanPerimeters + 1.0*maxPerimeters)/2.5)));
+
+    %imshow(edges);
 
     % Fill these components in with white colors.
 
     Ifill = imfill(edges,'holes');
     imfinal = Ifill;
-    figure(6)
-    imshow(imfinal)
-    
+
     %imshow(imfinal);
 
     % Reduce the noise and small variations near the boundaries using a
@@ -158,10 +150,8 @@ for t=1:1
     % 3.0. This is generally true for objects with shapes vaguely representing
     % rectangles/circles for certain sizes (areas).
 
-    bwfinal = ismember(L, find(([D1.Area] >= meanArea/3.0) & ([D1.Area] <= meanArea*3.0) & ([D1.Area] ./ [D1.Perimeter] >= 3.0)));
-    figure(7)
-    imshow(bwfinal)
-    
+    bwfinal = ismember(L, find(([D1.Area] > meanArea*3.0) & ([D1.Area] ./ [D1.Perimeter] >= 3.0)));
+
     %imshow(bwfinal);
 
     % Dilate - Erode to get a boundary of all the detected windows
@@ -181,7 +171,7 @@ for t=1:1
             end
         end
     end
-    figure(8)
+
     imshow(total_img);
 
     imwrite(total_img, strcat(strcat('outputs/',int2str(t)),'.jpg'));
@@ -194,5 +184,5 @@ end
 %         end
 %     end
 % end
-% fprintf('\n');
+% fprintf('\n')
 
