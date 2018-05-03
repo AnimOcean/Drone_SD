@@ -19,7 +19,7 @@ exts = {'.jpg'}
 buildingScene = imageDatastore(buildingDir, 'FileExtensions',exts);
 
 % % Display images to be stitched
- montage(buildingScene.Files)
+ montage(buildingScene.Files);
 
 
 %% Step 2 - Register Image Pairs 
