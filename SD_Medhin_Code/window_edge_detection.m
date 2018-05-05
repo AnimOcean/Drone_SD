@@ -1,13 +1,13 @@
-% Prepare work space
+%% Prepare work space
 close all; clear all; clc;
 
-% Input and resize image
-input_img = strcat('test_images/','liz2','.jpg');
+%% Input and resize image
+input_img = 'test_images/liz2.jpg';
 img = imread(input_img);
 img = imresize(img,[1500 NaN]);
 edgesbinary = zeros(500,682);
 img_copy2 = img;
-
+%% Setting up the image
 % Set threshold level
 thresh = 6;
 
@@ -15,26 +15,25 @@ thresh = 6;
 img = padarray(img, [thresh/2 thresh/2], 0, 'both');
 img_copy = img;
 
-figure(001)
-imshow(img_copy)
-
 % Apply gaussian filter
 img_copy = imgaussfilt(img_copy,3.5);
 
 % Convert image to grayscale
 img = rgb2gray(img_copy);
 
-figure(002)
+figure(001)
 imshow(img)
+title('grayscale image');
 
-% Get image edges using a canny edge detector
+%% Get image edges using a canny edge detector
 edges = edge(img,'canny');
 edges = imdilate(edges,strel('rectangle',[3 3]));
 
 figure(003)
 imshow(edges)
+title('edge image');
 
-% Apply edge thresholding
+%% Apply edge thresholding
 for i=thresh+1:size(img_copy,1)-thresh
     for j=thresh+1:size(img_copy,2)-thresh
         if edges(i,j) == 1
@@ -110,6 +109,7 @@ edges_new = edges;
 figure(004)
 imshow(edges_new)
 
+%%
 % Join up small disconnected edges since these generally correspond to the
 % same component and need to be connected
 for i = 3:size(edges,1)-2
@@ -131,12 +131,14 @@ edges = edges_new;
 figure(005)
 imshow(edges)
 
+%%
 % Consider regions and discard ones whose perimeters are too large or too
 % small.
 % Find connected components
 conn = conndef(ndims(edges), 'minimal');
 CC = bwconncomp(edges, conn);
 
+%%
 % Find perimeter around boundary of connected components
 D1 = regionprops(CC, 'perimeter');
 
@@ -146,7 +148,7 @@ perimeters = [D1.Perimeter];
 disp(maxPerimeters);
 
 L = labelmatrix(CC);
-
+%%
 % Remove connected components if perimeter is less than (mean perimeter)/4
 % or if perimeter is greater than (1.5 * mean perimeter + max
 % perimeter)/2.5
@@ -161,7 +163,7 @@ imfinal = Ifill;
 
 figure(007)
 imshow(imfinal)
-
+%% Noise reduction
 % Reduce the noise and small variations near the boundaries using a
 % morphological opening
 imfinal = imopen(imfinal,strel('rectangle',[5 5]));
@@ -176,6 +178,7 @@ disp(meanArea);
 
 L = labelmatrix(CC);
 
+%%
 % Consider connected components and select regions with certain area
 % constrians and the area to perimeter ratio is greater than or equal to
 % 3.0; This is generally true for objects with shapes vaguely representing
@@ -203,15 +206,8 @@ end
 figure(009)
 imshow(img_copy2);
 
-% Save output
+%% Save
+%Save output
 imwrite(img_copy2, strcat(strcat('outputs/',int2str(t)),'.jpg'));
 
-% for i = 1:size(edgesbinary,1)
-%     for j = 1:size(edgesbinary,2)
-%         if edgesbinary(i,j) == 1;
-%             fprintf('\nEdge at row %d and column %d', i, j);
-%         end
-%     end
-% end
-% fprintf('\n');
 
