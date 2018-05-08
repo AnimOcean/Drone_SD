@@ -5,7 +5,7 @@ close all; clear all; clc;
 input_img = strcat('test_images/','liz2','.jpg');
 img = imread(input_img);
 img = imresize(img,[1500 NaN]);
-edgesbinary = zeros(500,682);
+edgesbinary = zeros(size(img));
 img_copy2 = img;
 
 % Set threshold level
@@ -29,7 +29,7 @@ imshow(img)
 
 % Get image edges using a canny edge detector
 edges = edge(img,'canny');
-edges = imdilate(edges,strel('rectangle',[3 3]));
+edges = imdilate(edges,strel('rectangle',[8 8]));
 
 figure(003)
 imshow(edges)
@@ -170,7 +170,7 @@ conn = conndef(ndims(imfinal), 'minimal');
 CC = bwconncomp(imfinal, conn);
 D1 = regionprops(CC, 'area', 'perimeter');
 
-areas = [D1.Area];
+areas = [D1.Area]
 [meanArea] = mean(areas);
 disp(meanArea);
 
@@ -180,7 +180,7 @@ L = labelmatrix(CC);
 % constrians and the area to perimeter ratio is greater than or equal to
 % 3.0; This is generally true for objects with shapes vaguely representing
 % rectangles/circles for certain sizes (areas)
-bwfinal = ismember(L, find(([D1.Area] >= meanArea/3.0) & ([D1.Area] <= meanArea*3.0) & ([D1.Area] ./ [D1.Perimeter] >= 3.0)));
+bwfinal = ismember(L, find(([D1.Area] >= meanArea/2.0) & ([D1.Area] <= meanArea*4.0) & ([D1.Perimeter] ./ [D1.Area] >= 0.5)));
 
 figure(008)
 imshow(bwfinal)
@@ -204,7 +204,7 @@ figure(009)
 imshow(img_copy2);
 
 % Save output
-imwrite(img_copy2, strcat(strcat('outputs/',int2str(t)),'.jpg'));
+imwrite(img_copy2, strcat(strcat('outputs/',int2str(1)),'.jpg'));
 
 % for i = 1:size(edgesbinary,1)
 %     for j = 1:size(edgesbinary,2)
