@@ -15,7 +15,7 @@ function [panorama,xLimits, yLimits, xlim,ylim] = panoramic_stitch(filelocation)
 % Load images.
 % buildingDir = fullfile(toolboxdir('vision'), 'visiondata', 'building');
 buildingDir = fullfile(filelocation);
-exts = {'.jpg'}
+exts = {'.jpg'};
 buildingScene = imageDatastore(buildingDir, 'FileExtensions',exts);
 
 % % Display images to be stitched
