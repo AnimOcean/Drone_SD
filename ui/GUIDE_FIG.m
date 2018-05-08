@@ -22,7 +22,7 @@ function varargout = GUIDE_FIG(varargin)
 
 % Edit the above text to modify the response to help GUIDE_FIG
 
-% Last Modified by GUIDE v2.5 08-May-2018 15:01:19
+% Last Modified by GUIDE v2.5 08-May-2018 15:10:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,13 +79,6 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-directory=evalin('base','directory');
-[panorama, xLimits, yLimits, xlim, ylim] = panoramic_stitch(directory);
-
-assignin('base', 'xLimits', xLimits)
-assignin('base', 'yLimits', yLimits)
-
-assignin('base', 'panorama', panorama)
 
 %{
 clear all
@@ -96,8 +89,9 @@ clc
 
 % Read and store all images, also store flipped/reversed images
 
-cdata=panorama;
-cdatar=flipdim(cdata,2);
+
+%cdata=panorama;
+%cdatar=flipdim(cdata,2);
 
 %{
 cdata = flipdim( imread('transformed_stitch.JPG'), 1 );
@@ -130,7 +124,7 @@ cdatar5 = flipdim( cdata5, 2 );
 % Pull size for the surfaces from front image for x and z.  Pull size from
 % top image for y (depth)
 
-
+axes(handles.axes1);
 %[z1,x1]=size(cdata);
 %x1=x1/3;
 y1=1000;
@@ -353,5 +347,18 @@ directory=evalin('base','directory');
 [panorama, xLimits, yLimits, xlim, ylim] = panoramic_stitch(directory);
 
 
+% --- Executes on button press in Panorama.
+function Panorama_Callback(hObject, eventdata, handles)
+% hObject    handle to Panorama (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+directory=evalin('base','directory');
+[panorama, xLimits, yLimits, xlim, ylim] = panoramic_stitch(directory);
 
+assignin('base', 'xLimits', xLimits)
+assignin('base', 'yLimits', yLimits)
 
+assignin('base', 'panorama', panorama)
+
+cdata=panorama;
+cdatar=flipdim(cdata,2);
