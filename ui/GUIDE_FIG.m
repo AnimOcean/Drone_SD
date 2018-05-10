@@ -22,7 +22,7 @@ function varargout = GUIDE_FIG(varargin)
 
 % Edit the above text to modify the response to help GUIDE_FIG
 
-% Last Modified by GUIDE v2.5 03-May-2018 14:32:32
+% Last Modified by GUIDE v2.5 08-May-2018 15:10:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,9 +79,6 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-directory=evalin('base','directory');
-[panorama, xLimits, yLimits, xlim, ylim] = panoramic_stitch(directory);
-
 
 %{
 clear all
@@ -92,8 +89,9 @@ clc
 
 % Read and store all images, also store flipped/reversed images
 
-cdata=panorama;
-cdatar=flipdim(cdata,2);
+
+%cdata=panorama;
+%cdatar=flipdim(cdata,2);
 
 %{
 cdata = flipdim( imread('transformed_stitch.JPG'), 1 );
@@ -125,32 +123,42 @@ cdatar5 = flipdim( cdata5, 2 );
 
 % Pull size for the surfaces from front image for x and z.  Pull size from
 % top image for y (depth)
-[z1,x1]=size(cdata);
-x1=x1/3;
-y1=1000;
-x1=x1;
-y1=y1;
-z1=z1;
 
-assignin('base', 'x1', x1)
-assignin('base', 'y1', y1)
-assignin('base', 'z1', z1)
+axes(handles.axes1);
+%[z1,x1]=size(cdata);
+%x1=x1/3;
+y1=1000;
+%x1=xLimits(2) - xLimits(1);
+y1=y1;
+%z1=yLimits(2) - yLimits(1);
+
+%assignin('base', 'x1', x1)
+%assignin('base', 'y1', y1)
+%assignin('base', 'z1', z1)
+
+%assignin('base', 'xlim', xlim)
+%assignin('base', 'ylim', ylim)
 
 
 % Create solid color for bottom surface (gray)
 C=[0, 0, 0];
 
+x1=evalin('base','x1');
+z1=evalin('base','z1');
+cdata=evalin('base','cdata');
+cdatar=flipdim(cdata,2);
+
 % Create surfaces
 % font (south)
 surface([0 x1; 0 x1], [0 0; 0 0], [0 0; z1 z1], ...
     'FaceColor', 'texturemap', 'CData', cdata );
-% left
+% left (west)
 surface([0 0; 0 0], [0 y1; 0 y1], [0 0; z1 z1], ...
     'FaceColor', 'texturemap', 'CData', cdatar );
-% right
+% right (east)
 surface([x1 x1; x1 x1], [0 y1; 0 y1], [0 0; z1 z1], ...
     'FaceColor', 'texturemap', 'CData', cdata );
-% back
+% back (north)
 surface([0 x1; 0 x1], [y1 y1; y1 y1], [0 0; z1 z1], ...
     'FaceColor', 'texturemap', 'CData', cdatar );
 % top
@@ -286,8 +294,86 @@ directory=uigetdir('C:\')
 assignin('base', 'directory', directory)
 
 
+% --- Executes on button press in Restitch.
+function Restitch_Callback(hObject, eventdata, handles)
+% hObject    handle to Restitch (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in popupmenu2.
+function popupmenu2_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu2
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+    axes(handles.axes3)
+    
+    switch get(handles.popupmenu, 'Value')
+        case 1
+            N
+            plot(panorama)
+        case 2
+            E
+        case 3
+            S
+        case 4
+            W
+        case 5
+            T
+    end
+            
+end
+
+
+% --- Executes on button press in Calibration.
+function Calibration_Callback(hObject, eventdata, handles)
+% hObject    handle to Calibration (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
 
 
+directory=evalin('base','directory');
+[panorama, xLimits, yLimits, xlim, ylim] = panoramic_stitch(directory);
+
+
+% --- Executes on button press in Panorama.
+function Panorama_Callback(hObject, eventdata, handles)
+% hObject    handle to Panorama (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+directory=evalin('base','directory');
+[panorama, xLimits, yLimits, xlim, ylim] = panoramic_stitch(directory);
+
+assignin('base', 'xLimits', xLimits)
+assignin('base', 'yLimits', yLimits)
+
+assignin('base', 'panorama', panorama)
+
+cdata=panorama;
+cdatar=flipdim(cdata,2);
+assignin('base', 'cdata', panorama)
+
+x1=xLimits(2) - xLimits(1);
+y1=y1;
+z1=yLimits(2) - yLimits(1);
+
+assignin('base', 'x1', x1)
+assignin('base', 'z1', z1)
 
 

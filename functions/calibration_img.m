@@ -1,6 +1,4 @@
-function [reducedImageFolder,resizedImageFolder] = calibration_img(org_folder)
-
-calibration; 
+function [reducedImageFolder,resizedImageFolder] = calibration_img(org_folder, cameraParams)
 
 % TopFolder ='C:\Users\liz_surface5\Desktop\Senior Design\duo pro r\pics';
 TopFolder = org_folder;
@@ -104,7 +102,7 @@ Reduced_DS_RGB = imageDatastore(ReducedImageDir, 'FileExtensions',exts1);
 
 for j=1:numImages
     img3=readimage(Reduced_DS_RGB,j);
-    img3resized=imresize(img3,.7);
+    img3resized=imresize(img3,3/5);
             % if statements checking the number of significant figures for the image's index
         if j >= 1 && j <= 9     % the first 9 images have extra zeros added to their name
                                 % maintains consistent naming convention that is read in the correct order
