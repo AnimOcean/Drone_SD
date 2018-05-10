@@ -1,13 +1,16 @@
 %% Correlation between images 
 
-clear all 
-clc 
-close all
+% clear all 
+% clc 
+% close all
 
 %%
-imageDir = fullfile('C:\Users\liz_surface5\Desktop\Senior Design\practice photos\main_building5');
-images = imageDatastore(imageDir);
-new_folder= fullfile('C:\Users\liz_surface5\Desktop\Senior Design\practice photos\main_building5\reorder');
+% imageDir = fullfile('C:\Users\liz_surface5\Desktop\Senior Design\practice photos\main_building5');
+imageDir = fullfile('C:\Users\liz_surface5\Desktop\Senior Design\duo pro r\pics2');
+exts1 = {'.jpg'};
+images = imageDatastore(imageDir,'FileExtensions',exts1);
+% montage(images.Files)
+% new_folder= fullfile('C:\Users\liz_surface5\Desktop\Senior Design\practice photos\main_building5\reorder');
 % I1 = readimage(images,10);
 % I1a = rgb2gray(I1);
 % figure
@@ -20,8 +23,8 @@ new_folder= fullfile('C:\Users\liz_surface5\Desktop\Senior Design\practice photo
 % figure 
 % imshow(I2a)
 
-% n=length(images.Files);
-n=5;
+% n=numel(images.Files);
+n=40;
 R=zeros(1,n);
 
 
@@ -33,12 +36,14 @@ end
 
 testCorr = zeros(length(I));
 for i = 1:length(I)
-    for j = 1:length(I)
+    for j = 1:i
         if i ~= j
             testCorr(i,j) = corr2(I{i},I{j});
         end
-    end    
+    end   
+    i
 end
+
 % ph=zeros(n);
 % for i = 1:length(I)
 %     for j=
