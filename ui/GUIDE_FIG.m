@@ -128,20 +128,25 @@ axes(handles.axes1);
 %[z1,x1]=size(cdata);
 %x1=x1/3;
 y1=1000;
-x1=xLimits(2) - xLimits(1);
+%x1=xLimits(2) - xLimits(1);
 y1=y1;
-z1=yLimits(2) - yLimits(1);
+%z1=yLimits(2) - yLimits(1);
 
-assignin('base', 'x1', x1)
-assignin('base', 'y1', y1)
-assignin('base', 'z1', z1)
+%assignin('base', 'x1', x1)
+%assignin('base', 'y1', y1)
+%assignin('base', 'z1', z1)
 
-assignin('base', 'xlim', xlim)
-assignin('base', 'ylim', ylim)
+%assignin('base', 'xlim', xlim)
+%assignin('base', 'ylim', ylim)
 
 
 % Create solid color for bottom surface (gray)
 C=[0, 0, 0];
+
+x1=evalin('base','x1');
+z1=evalin('base','z1');
+cdata=evalin('base','cdata');
+cdatar=flipdim(cdata,2);
 
 % Create surfaces
 % font (south)
@@ -362,3 +367,13 @@ assignin('base', 'panorama', panorama)
 
 cdata=panorama;
 cdatar=flipdim(cdata,2);
+assignin('base', 'cdata', panorama)
+
+x1=xLimits(2) - xLimits(1);
+y1=y1;
+z1=yLimits(2) - yLimits(1);
+
+assignin('base', 'x1', x1)
+assignin('base', 'z1', z1)
+
+
