@@ -1,6 +1,4 @@
-function [reducedImageFolder,resizedImageFolder] = calibration_img(org_folder)
-
-calibration; 
+function [reducedImageFolder,resizedImageFolder] = calibration_img(org_folder, cameraParams)
 
 % TopFolder ='C:\Users\liz_surface5\Desktop\Senior Design\duo pro r\pics';
 TopFolder = org_folder;
