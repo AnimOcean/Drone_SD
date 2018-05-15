@@ -8,7 +8,6 @@
 % clear all;
 % close all;
 % clc;
-
 % function loadAnalyzeIR(windowBlockOut)
 function loadAnalyzeIR(directory)
 
