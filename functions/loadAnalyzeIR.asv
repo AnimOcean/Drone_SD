@@ -10,7 +10,7 @@
 % clc;
 
 % function loadAnalyzeIR(windowBlockOut)
-function loadAnalyzeIR(directory)
+function loadAnalyzeIR(windowBlockOut)
 
 %% Loading IR images
 % Attempting to prompt the user to load images through windows explorer
