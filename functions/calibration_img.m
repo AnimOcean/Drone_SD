@@ -33,10 +33,10 @@ I1 = readimage(OriginalRGB, 1);
 imageSizeRGB = size(I1);  % Size of the RGB image
 
 widthRGB = imageSizeRGB(2); % Width of each image
-widthIR = round(0.85334*widthRGB);
+widthIR = round(0.85*widthRGB);
 
 heightRGB = imageSizeRGB(1); % Height of each image
-heightIR = round(0.8*heightRGB);
+heightIR = round(0.90666667*heightRGB);
 
 % Gap between the edges of each image, if both were centered at the same location
 edgeWidthDiff = round((widthRGB - widthIR)/2);      
@@ -102,7 +102,7 @@ Reduced_DS_RGB = imageDatastore(ReducedImageDir, 'FileExtensions',exts1);
 
 for j=1:numImages
     img3=readimage(Reduced_DS_RGB,j);
-    img3resized=imresize(img3,3/5);
+    img3resized=imresize(img3,0.56470588);
             % if statements checking the number of significant figures for the image's index
         if j >= 1 && j <= 9     % the first 9 images have extra zeros added to their name
                                 % maintains consistent naming convention that is read in the correct order
