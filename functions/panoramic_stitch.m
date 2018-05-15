@@ -178,5 +178,15 @@ end
 % figure
 % imshow(panorama)
 
-end
 
+
+%% IR stitch - used to call upon the code that stitches IR images together
+
+% infraDir = fullfile('E:\DREXEL STUFF\SENIOR DESIGN\IR Data\4-28-18 data\Tiffs\Threshold IR Images');
+% 
+% exts2 = {'.jpg'};
+% infraScene = imageDatastore(infraDir, 'FileExtensions',exts2);
+% 
+% panoramaIR = overlayStitchIR(infraScene, height, width, numImages, tforms, blender, panorama, panoramaView);
+
+end
