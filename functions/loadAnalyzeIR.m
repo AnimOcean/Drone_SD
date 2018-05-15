@@ -16,7 +16,8 @@ function loadAnalyzeIR(directory)
 % when code runs.
     
 % baseFolder = baseFolder;
-folderNameIR = 'E:\DREXEL STUFF\SENIOR DESIGN\IR Data\4-28-18 data\Tiffs\Test 1';
+% folderNameIR = 'E:\DREXEL STUFF\SENIOR DESIGN\IR Data\4-28-18 data\Tiffs\Test 1';
+folderNameIR = directory;
 addpath(folderNameIR);
 
 % Name a new folder to create in location with the images
@@ -39,7 +40,7 @@ if not(exist(newFolderNameThresholdIR,'dir'))
 end
 
 % Read all .csv files in the selected directory
-allFiles = dir('E:\DREXEL STUFF\SENIOR DESIGN\IR Data\4-28-18 data\Tiffs\*.tiff');
+allFiles = dir(fullfile(directory,'*.tiff'));
 imgHandles = {allFiles.name};   % Filename for each image
 numFiles = length(imgHandles);  % the number of .tiff files loaded
 
