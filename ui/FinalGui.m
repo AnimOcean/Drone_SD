@@ -307,7 +307,13 @@ function Calculate_Callback(hObject, eventdata, handles)
 % hObject    handle to Calculate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+xx = 0.75;
+T_in = 50;
+T_out = 5;
+ss = xx*((30+273)-T_out)/(T_in-T_out);
+heat_dis = ss*15;
+set(handles.EUResult, 'string', num2str(ss));
+set(handles.HeatResult, 'string', num2str(heat_dis));
 
 % --- Executes on selection change in EmmisivityMenu.
 function EmmisivityMenu_Callback(hObject, eventdata, handles)
