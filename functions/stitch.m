@@ -1,7 +1,4 @@
-%% 
-clear all 
-close all 
-clc
+function panorama = stitch(filestring)
 
 %% Step 1 - Load Images
 % The image set used in this example contains pictures of a building. These
@@ -17,11 +14,11 @@ clc
 
 % Load images.
 % buildingDir = fullfile(toolboxdir('vision'), 'visiondata', 'building');
-buildingDir = fullfile('C:\Users\Elizabeth\Desktop\Senior Design\practice photos\main via phone\round3');
+buildingDir = fullfile(filestring);
 buildingScene = imageDatastore(buildingDir);
 
 % Display images to be stitched
-montage(buildingScene.Files)
+% % montage(buildingScene.Files)
 
 
 %% Step 2 - Register Image Pairs 
@@ -36,8 +33,13 @@ montage(buildingScene.Files)
 I = readimage(buildingScene, 1);
 
 % Initialize features for I(1)
-grayImage = rgb2gray(I);
-points = detectSURFFeatures(grayImage);
+if size(I,3) > 1
+    grayImage = rgb2gray(I);
+else
+    grayImage = I;
+end
+% points = detectSURFFeatures(grayImage);
+points = detectFASTFeatures(grayImage);
 [features, points] = extractFeatures(grayImage, points);
 
 % Initialize all the transforms to the identity matrix. Note that the
@@ -58,8 +60,12 @@ for n = 2:numImages
     I = readimage(buildingScene, n);
     
     % Detect and extract SURF features for I(n).
-    grayImage = rgb2gray(I);    
-    points = detectSURFFeatures(grayImage);    
+    if size(I,3) > 1
+        grayImage = rgb2gray(I);
+    else
+        grayImage = I;
+    end   
+    points = detectFASTFeatures(grayImage);    
     [features, points] = extractFeatures(grayImage, points);
   
     % Find correspondences between I(n) and I(n-1).
@@ -147,7 +153,7 @@ width  = round(xMax - xMin);
 height = round(yMax - yMin);
 
 % Initialize the "empty" panorama.
-panorama = zeros([height width 3], 'like', I);
+panorama = zeros([height width], 'like', I);
 
 
 %% Step 4 - Create the Panorama

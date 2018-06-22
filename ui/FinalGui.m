@@ -22,7 +22,7 @@ function varargout = FinalGui(varargin)
 
 % Edit the above text to modify the response to help FinalGui
 
-% Last Modified by GUIDE v2.5 10-May-2018 15:08:21
+% Last Modified by GUIDE v2.5 22-Jun-2018 12:35:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+addpath ../functions
 
 % UIWAIT makes FinalGui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -73,98 +74,31 @@ function varargout = FinalGui_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in ProgramConfiguration.
-function ProgramConfiguration_Callback(hObject, eventdata, handles)
-% hObject    handle to ProgramConfiguration (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in GenerateModel.
-function GenerateModel_Callback(hObject, eventdata, handles)
-% hObject    handle to GenerateModel (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Read and store all images, also store flipped/reversed images
-
-cdata = flipdim( imread('transformed_stitch.JPG'), 1 );
-cdatar = flipdim( cdata, 2 );
-
-cdata2 = flipdim( imread('top.jpg'), 1 );
-cdatar2 = flipdim( cdata2, 2 );
-
-ax1=handles.axes1
-ax2=handles.axes2
-
-%{
-cdata3 = flipdim( imread('Top.jpg'), 1 );
-cdatar3 = flipdim( cdata3, 2 );
-
-cdata4 = flipdim( imread('Top.jpg'), 1 );
-cdatar4 = flipdim( cdata4, 2 );
-
-cdata5 = flipdim( imread('Top.jpg'), 1 );
-cdatar5 = flipdim( cdata5, 2 );
-%}
-
-% for final code:
-% cdata=south(front)
-% cdata2=west(left)
-% cdata3=east(right)
-% cdata4=north(back)
-% cdata5=top
-
-% Pull size for the surfaces from front image for x and z.  Pull size from
-% top image for y (depth)
-[z1,x1]=size(cdata);
-x1=x1/3;
-y1=1000;
-x1=x1;
-y1=y1;
-z1=z1;
-
-% Create solid color for bottom surface (gray)
-C=[0, 0, 0];
+% --- Executes on button press in stitchImage.
+function stitchImage_Callback(hObject, eventdata, handles)
+global pano;
 axes(handles.axes1)
+text(0.25,0.25, "PROCESSING IMAGE SET");
+drawnow();
+dstring = get(handles.dirSet, 'string');
+pano = stitch(dstring);
+axes(handles.axes1)
+imshow(pano)
 
-% Create surfaces
-% font (south)
-surface([0 x1; 0 x1], [0 0; 0 0], [0 0; z1 z1], ...
-    'FaceColor', 'texturemap', 'CData', cdata );
-% left
-surface([0 0; 0 0], [0 y1; 0 y1], [0 0; z1 z1], ...
-    'FaceColor', 'texturemap', 'CData', cdatar );
-% right
-surface([x1 x1; x1 x1], [0 y1; 0 y1], [0 0; z1 z1], ...
-    'FaceColor', 'texturemap', 'CData', cdata );
-% back
-surface([0 x1; 0 x1], [y1 y1; y1 y1], [0 0; z1 z1], ...
-    'FaceColor', 'texturemap', 'CData', cdatar );
-% top
-surface([0 x1; 0 x1], [0 0; y1 y1], [z1 z1; z1 z1], ...
-    'FaceColor', 'texturemap', 'CData', cdata2 );
-% bottom
-surface([0 x1; 0 x1], [0 0; y1 y1], [0 0; 0 0], ...
-    C);
-% set 3 dimensional view
-view(3);
 
-% set figure axis so it doesn't distort images
-axis equal
-axis off
-% pull up camera toolbar and set preferences so rotation is set by default
-cameratoolbar('NoReset')
-cameratoolbar('SetMode', 'orbit')
-
-% --- Executes on button press in SelectArea.
-function SelectArea_Callback(hObject, eventdata, handles)
-% hObject    handle to SelectArea (see GCBO)
+% --- Executes on button press in selectArea.
+function selectArea_Callback(hObject, eventdata, handles)
+global pano;
+% hObject    handle to selectArea (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+axes(handles.axes1)
+boundary = ginput(2);
+edited_image = selectWindow(pano, boundary);
 axes(handles.axes2)
-cdata=imread('transformed_stitch_crop.JPG');
-image(cdata)
+image(edited_image)
 axis off
+
 
 % --- Executes on button press in RGB.
 function RGB_Callback(hObject, eventdata, handles)
@@ -388,6 +322,52 @@ function EmmisivityMenu_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function EmmisivityMenu_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to EmmisivityMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function dirSet_Callback(hObject, eventdata, handles)
+% hObject    handle to dirSet (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of dirSet as text
+%        str2double(get(hObject,'String')) returns contents of dirSet as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function dirSet_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to dirSet (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in stitchType.
+function stitchType_Callback(hObject, eventdata, handles)
+% hObject    handle to stitchType (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns stitchType contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from stitchType
+
+
+% --- Executes during object creation, after setting all properties.
+function stitchType_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to stitchType (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
