@@ -78,6 +78,7 @@ varargout{1} = handles.output;
 function stitchImage_Callback(hObject, eventdata, handles)
 global pano;
 axes(handles.axes1)
+cla;
 text(0.25,0.25, "PROCESSING IMAGE SET");
 drawnow();
 dstring = get(handles.dirSet, 'string');
@@ -307,7 +308,9 @@ function Calculate_Callback(hObject, eventdata, handles)
 % hObject    handle to Calculate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-xx = 0.75;
+emtable = [ 0.75 0.54  0.85 0.93 0.85 0.86 0.95];
+vv = get(handles.EmmisivityMenu, 'value');
+xx = emtable(vv);
 T_in = 50;
 T_out = 5;
 ss = xx*((30+273)-T_out)/(T_in-T_out);

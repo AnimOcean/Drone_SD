@@ -182,6 +182,3 @@ for i = 1:numImages
     % Overlay the warpedImage onto the panorama.
     panorama = step(blender, panorama, warpedImage, mask);
 end
-
-figure
-imshow(panorama)
