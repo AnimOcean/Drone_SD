@@ -89,7 +89,7 @@ imshow(pano)
 
 % --- Executes on button press in selectArea.
 function selectArea_Callback(hObject, eventdata, handles)
-global pano edited_image;
+global pano, edited_image;
 % hObject    handle to selectArea (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -322,11 +322,7 @@ switch operation
         set(handles.EUResult, 'string', num2str(ss));
         set(handles.HeatResult, 'string', num2str(heat_dis));
     case 2
-        axes(handles.axes2)
-        cla;
-        idcrack(edited_image, 0.5);
-end
-
+        crackbi = idcrack(
         
         
 
